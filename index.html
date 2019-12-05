@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Cubi Level Manager</title>
+
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header>
+            <h2>Cubi Level Manager</h2>
+            <p>
+                Generiert eine neue Übersicht, aller Levels (<code>summary.json</code>) mit Titel, Beschreibung und
+                Rating. Ihr könnt die Reihenfolge per Drag and Drop in der Liste abändern.<br><br>
+                Folgt der Schritt für Schritt Anleitung und euch können keine Fehler passieren.
+            </p>
+        </header>
+
+        <main>
+            <section id="step-0">
+                <h3>Fügt den Inhalt der aktuellen <code>summary.json</code> hier ein.</h3>
+                <p>
+                    Öffne <a href="https://github.com/IT4Kids/levels">IT4Kids/levels</a> und kopiert den Inhalt der
+                    Datei <code>summary.json</code> in das Textfeld. Danach klicke auf eine leere Fläche und gehe zum
+                    nächsten Schritt.
+                </p>
+                <textarea id="i-current_summary" onblur="initializeSortable(this.value)" rows="15" placeholder="Paste here"></textarea>
+            </section>
+            <section id="step-1">
+                <h3>Bearbeite die Liste</h3>
+                <p>
+                    Du kannst nun, die Elemente an dem linken Symbol in der Liste neu sortieren, ein neues über den
+                    Button hinzufügen und Elemente entfernen. Klick am Ende auf fertig.
+                </p>
+                <button id="new-level" onclick="newLevelItem()">Level hinzufügen</button>
+                <ul id="items"></ul>
+                <button id="finish" onclick="generateJsonFromList()">Fertig!</button>
+            </section>
+            <section id="step-2">
+                <h3>Kopiert den Inhalt hier nun in die <code>summary.json</code></h3>
+                <p>
+                    Wenn du bereits auf fertig geklickt hast, kannst du nun auf kopieren klicken, welches dir den Text
+                    aus dem unteren Textfeld direkt in deine Zwischenablage einfügt. Nun kannst du einfach wieder auf
+                    GitHub gehen, <code>summary.json</code> bearbeiten und einfach den Text direkt aus deiner
+                    Zwischenablage dort einfügen.
+                </p>
+                <button id="copy-summary" onclick="toClipboard(document.getElementById('i-new_summary'))">Kopieren</button><br>
+                <textarea id="i-new_summary" rows="30">Test</textarea>
+            </section>
+        </main>
+
+        <script>
+            var items = document.getElementById("items");
+
+            function initializeSortable(value) {
+                generateListFromJson(value);
+                makeSortable();
+            }
+
+            function makeSortable() {
+                Sortable.create(items, {
+                    handle: '.handle'
+                });
+            }
+
+            function generateListFromJson(value) {
+                if(value === "") {
+                    items.innerHTML = "";
+                    return;
+                }
+                var json = JSON.parse(value);
+                items.innerHTML = "";
+                for(var i = 0; i < json.length; i++) {
+                    items.innerHTML += "<li>" +
+                        "<span class='handle'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg></span>" +
+                        "<label>Title:</label> <input type='text' name='title' value='" + json[i]["title"] + "'><br>" +
+                        "<label>Rating:</label> <input type='number' name='rating' min='0' max='3' value='" + json[i]["rating"] + "'><br>" +
+                        "<label>Description:</label> <textarea name='description'>" + json[i]["description"] + "</textarea>" +
+                        "<label>Filename:</label> <input type='text' name='filename' value='" + json[i]["filename"] + "'><br>" +
+                        "<label>Solution exists:</label> <input type='checkbox' name='solution_exists' " + ((json[i]["solution_exists"]) ? "checked" : "") + "><br>" +
+                        "<button class='delete' onclick='askToDelete(this)'>Delete</button>" +
+                        "</li>";
+                }
+            }
+
+            function newLevelItem() {
+                var li = document.createElement("li");
+                li.innerHTML =  "<span class='handle'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg></span>" +
+                    "<label>Title:</label> <input type='text' name='title'><br>" +
+                    "<label>Rating:</label> <input type='number' name='rating' min='0' max='3' value='0'><br>" +
+                    "<label>Description:</label> <textarea name='description'></textarea>" +
+                    "<label>Filename:</label> <input type='text' name='filename'><br>" +
+                    "<label>Solution exists:</label> <input type='checkbox' name='solution_exists'><br>" +
+                    "<button class='delete' onclick='askToDelete(this)'>Delete</button>";
+                items.insertBefore(li, items.childNodes[0]);
+                makeSortable();
+            }
+
+            function generateJsonFromList() {
+                var items = document.getElementById("items").children,
+                    json = [];
+                for(var i = 0; i < items.length; i++) {
+                    json.push({
+                        title: items[i].querySelector("[name='title']").value,
+                        rating: parseInt(items[i].querySelector("[name='rating']").value),
+                        description: items[i].querySelector("[name='description']").value,
+                        filename: items[i].querySelector("[name='filename']").value,
+                        solution_exists: (items[i].querySelector("[name='solution_exists']").value === "on"),
+                    })
+                }
+                document.getElementById("i-new_summary").value = JSON.stringify(json);
+            }
+
+            function toClipboard(el) {
+                el.select();
+                document.execCommand("copy");
+                alert("Kopiert");
+            }
+
+            function askToDelete(el) {
+                if(confirm('Delete element?')) {
+                    el.parentNode.remove();
+                }
+            }
+        </script>
+    </body>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+</html>

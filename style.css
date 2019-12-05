@@ -1,0 +1,95 @@
+body {
+    font-family: sans-serif;
+}
+
+header, main {
+    display: block;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+main {
+    max-width: 500px;
+}
+
+p {
+    text-align: justify;
+}
+
+ul li {
+    position: relative;
+    list-style: none;
+    display: block;
+    border: 1px solid #212121;
+    margin: 10px;
+    padding: 5px;
+}
+
+ul li.minimized .will-minimize {
+    display: none;
+}
+
+input:not([type="checkbox"]), textarea {
+    box-sizing: border-box;
+    width: 100%;
+    display: block;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 10px;
+    margin: 3px 0;
+}
+
+input:not([type="checkbox"]):hover, textarea:hover {
+    background: #dddddd;
+    border-color: #212121;
+}
+
+input:not([type="checkbox"]):focus, textarea:focus {
+    background: none;
+    border-color: #252fa9;
+}
+
+textarea {
+    resize: vertical;
+    border: 1px solid #ddd;
+}
+
+button {
+    display: inline-block;
+    padding: 5px 15px;
+    background: #212121;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: rgba(33, 33, 33, 0.8);
+}
+
+label {
+    font-weight: bold;
+    margin: 3px 0;
+}
+
+.handle {
+    display: block;
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    top: -1px;
+    left: -37px;
+    padding: 5px;
+    background-color: inherit;
+    border: inherit;
+    border-right: none;
+}
+
+.sortable-ghost {
+    opacity: 0.5;
+    background: #dddddd;
+}
+
+.delete {
+    background: #ff0000;
+}
