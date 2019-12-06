@@ -32,11 +32,10 @@
                 <h3>Bearbeite die Liste</h3>
                 <p>
                     Du kannst nun, die Elemente an dem linken Symbol in der Liste neu sortieren, ein neues über den
-                    Button hinzufügen und Elemente entfernen. Klick am Ende auf fertig.
+                    Button hinzufügen und Elemente entfernen.
                 </p>
                 <button id="new-level" onclick="newLevelItem()">Level hinzufügen</button>
                 <ul id="items"></ul>
-                <button id="finish" onclick="generateJsonFromList()">Fertig!</button>
             </section>
             <section id="step-2">
                 <h3>Kopiert den Inhalt hier nun in die <code>summary.json</code></h3>
@@ -47,7 +46,7 @@
                     Zwischenablage dort einfügen.
                 </p>
                 <button id="copy-summary" onclick="toClipboard(document.getElementById('i-new_summary'))">Kopieren</button><br>
-                <textarea id="i-new_summary" rows="30">Test</textarea>
+                <textarea id="i-new_summary" rows="30" disabled></textarea>
             </section>
         </main>
 
@@ -61,7 +60,10 @@
 
             function makeSortable() {
                 Sortable.create(items, {
-                    handle: '.handle'
+                    handle: '.handle',
+                    onChange: function () {
+                        generateJsonFromList()
+                    }
                 });
             }
 
@@ -73,29 +75,32 @@
                 var json = JSON.parse(value);
                 items.innerHTML = "";
                 for(var i = 0; i < json.length; i++) {
-                    items.innerHTML += "<li>" +
-                        "<span class='handle'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg></span>" +
-                        "<label>Title:</label> <input type='text' name='title' value='" + json[i]["title"] + "'><br>" +
-                        "<label>Rating:</label> <input type='number' name='rating' min='0' max='3' value='" + json[i]["rating"] + "'><br>" +
-                        "<label>Description:</label> <textarea name='description'>" + json[i]["description"] + "</textarea>" +
-                        "<label>Filename:</label> <input type='text' name='filename' value='" + json[i]["filename"] + "'><br>" +
-                        "<label>Solution exists:</label> <input type='checkbox' name='solution_exists' " + ((json[i]["solution_exists"]) ? "checked" : "") + "><br>" +
-                        "<button class='delete' onclick='askToDelete(this)'>Delete</button>" +
-                        "</li>";
+                    var l = json[i];
+                    newLevelItemWithValues(l.title, l.rating, l.description, l.filename, l.solution_exists);
                 }
             }
 
-            function newLevelItem() {
+            function newLevelItemWithValues(title, rating, description, filename, checked, prepend) {
                 var li = document.createElement("li");
-                li.innerHTML =  "<span class='handle'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg></span>" +
-                    "<label>Title:</label> <input type='text' name='title'><br>" +
-                    "<label>Rating:</label> <input type='number' name='rating' min='0' max='3' value='0'><br>" +
-                    "<label>Description:</label> <textarea name='description'></textarea>" +
-                    "<label>Filename:</label> <input type='text' name='filename'><br>" +
-                    "<label>Solution exists:</label> <input type='checkbox' name='solution_exists'><br>" +
-                    "<button class='delete' onclick='askToDelete(this)'>Delete</button>";
-                items.insertBefore(li, items.childNodes[0]);
+                li.innerHTML =  "<row>" +
+                    "<column><span class='handle'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg></span></column>" +
+                    "<column><label>Title:</label> <input type='text' name='title' value='" + title + "'></column>" +
+                    "<column><label>Rating:</label> <input type='number' name='rating' min='0' max='3' value='" + rating + "'></column>" +
+                    "<column><label>Filename:</label> <input type='text' name='filename' value='" + filename + "'></column>" +
+                    "<column><label>Solution exists:</label> <input type='checkbox' name='solution_exists'" + ((checked) ? " checked" : "") + "></column>" +
+                    "<column><button class='delete' onclick='askToDelete(this)'>Delete</button></column>" +
+                    "</row>" +
+                    "<label>Description:</label> <textarea name='description'>" + description + "</textarea>";
+                if(prepend === true) {
+                    items.insertBefore(li, items.childNodes[0]);
+                } else {
+                    items.append(li);
+                }
                 makeSortable();
+            }
+
+            function newLevelItem() {
+                newLevelItemWithValues("", "", "", "", "", true);
             }
 
             function generateJsonFromList() {
@@ -114,8 +119,10 @@
             }
 
             function toClipboard(el) {
+                el.disabled = false;
                 el.select();
                 document.execCommand("copy");
+                el.disabled = true;
                 alert("Kopiert");
             }
 
