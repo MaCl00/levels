@@ -53,9 +53,9 @@
         <script>
             var items = document.getElementById("items");
 
-            function initializeSortable(value) {
-                generateListFromJson(value);
-                makeSortable();
+            function initializeSortable() {
+                generateListFromJson();
+                generateJsonFromList();
             }
 
             function makeSortable() {
@@ -67,7 +67,8 @@
                 });
             }
 
-            function generateListFromJson(value) {
+            function generateListFromJson() {
+                var value = document.getElementById("i-current_summary").value;
                 if(value === "") {
                     items.innerHTML = "";
                     return;
@@ -88,9 +89,15 @@
                     "<column><label>Rating:</label> <input type='number' name='rating' min='0' max='3' value='" + rating + "'></column>" +
                     "<column><label>Filename:</label> <input type='text' name='filename' value='" + filename + "'></column>" +
                     "<column><label>Solution exists:</label> <input type='checkbox' name='solution_exists'" + ((checked) ? " checked" : "") + "></column>" +
-                    "<column><button class='delete' onclick='askToDelete(this)'>Delete</button></column>" +
+                    "<column><button class='delete' onclick='askToDelete(this.parentNode.parentNode)'>Delete</button></column>" +
                     "</row>" +
                     "<label>Description:</label> <textarea name='description'>" + description + "</textarea>";
+                var inputs = li.querySelectorAll("input, textarea");
+                for(var i = 0; i < inputs.length; i++) {
+                    inputs[i].onkeyup = function() {
+                        generateJsonFromList()
+                    }
+                }
                 if(prepend === true) {
                     items.insertBefore(li, items.childNodes[0]);
                 } else {
@@ -128,7 +135,7 @@
 
             function askToDelete(el) {
                 if(confirm('Delete element?')) {
-                    el.parentNode.remove();
+                    el.remove();
                 }
             }
         </script>
