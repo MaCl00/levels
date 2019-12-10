@@ -115,3 +115,12 @@ column input {
 .delete {
     background: #ff0000;
 }
+
+.hidden {
+    display: none;
+}
+
+#message-copy {
+    font-weight: bold;
+    color: #00B407;
+}

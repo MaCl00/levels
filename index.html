@@ -22,7 +22,7 @@
             <section id="step-0">
                 <h3>Fügt den Inhalt der aktuellen <code>summary.json</code> hier ein.</h3>
                 <p>
-                    Öffne <a href="https://github.com/IT4Kids/levels">IT4Kids/levels</a> und kopiert den Inhalt der
+                    Öffne <a target="_blank" href="https://github.com/IT4Kids/levels">IT4Kids/levels</a> und kopiert den Inhalt der
                     Datei <code>summary.json</code> in das Textfeld. Danach klicke auf eine leere Fläche und gehe zum
                     nächsten Schritt.
                 </p>
@@ -45,7 +45,8 @@
                     GitHub gehen, <code>summary.json</code> bearbeiten und einfach den Text direkt aus deiner
                     Zwischenablage dort einfügen.
                 </p>
-                <button id="copy-summary" onclick="toClipboard(document.getElementById('i-new_summary'))">Kopieren</button><br>
+                <button id="copy-summary" onclick="toClipboard(document.getElementById('i-new_summary'))">Kopieren</button>
+                <span id="message-copy" class="hidden">Inhalt kopiert!</span><br>
                 <textarea id="i-new_summary" rows="30" disabled></textarea>
             </section>
         </main>
@@ -132,7 +133,10 @@
                 el.select();
                 document.execCommand("copy");
                 el.disabled = true;
-                alert("Kopiert");
+                document.getElementById("message-copy").classList.remove("hidden");
+                setTimeout(function () {
+                    document.getElementById("message-copy").classList.add("hidden");
+                }, 3 * 1000)
             }
 
             function askToDelete(el) {
