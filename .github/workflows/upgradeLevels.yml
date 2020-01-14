@@ -1,6 +1,8 @@
 name: Upgrade levels
 
-on: [repository_dispatch]
+on: 
+  project_card:
+    types: [moved]
 
 jobs:
   build:
