@@ -19,3 +19,12 @@ jobs:
     - name: Upgrade level files
       run:
         python upgrader.py
+    - name: Commit changes
+      run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "upgraded levels" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
