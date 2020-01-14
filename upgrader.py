@@ -41,7 +41,9 @@ def upgradeLevel(version, level):
     if (version == '0.5.1'):
         version = '0.6.0'
         level['projectdata']['monitors'] = []
-        level['projectdata']['settings']['centerAsOrigin'] = True
+        level['projectdata']['settings'] = {
+            'centerAsOrigin': True
+        }
     if (version == '0.6.0'):
         version = '0.6.1'
         level['projectdata']['title'] = 'Level'
