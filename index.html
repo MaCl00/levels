@@ -24,7 +24,7 @@
                 <p>
                     Öffne <a target="_blank" href="https://github.com/IT4Kids/levels">IT4Kids/levels</a> und kopiert den Inhalt der
                     Datei <code>summary.json</code> in das Textfeld. Danach klicke auf eine leere Fläche und gehe zum
-                    nächsten Schritt.
+                    nächsten Schritt. <b>Tipp</b>: Standardmäßig ist die <code>summary.json</code> schon geladen.
                 </p>
                 <textarea id="i-current_summary" onblur="initializeSortable(this.value)" rows="15" placeholder="Paste here"></textarea>
             </section>
@@ -54,6 +54,23 @@
         <script>
             var items = document.getElementById("items"),
                 uniq = 0;
+
+            function httpGet(url, callback) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function() {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        callback(xmlHttp.responseText);
+                    }
+                };
+                xmlHttp.open("GET", url, true);
+                xmlHttp.send(null);
+            }
+
+            // load summary json
+            httpGet("https://raw.githubusercontent.com/IT4Kids/levels/master/summary.json", function(d) {
+               document.getElementById("i-current_summary").value = d
+                initializeSortable()
+            });
 
             function initializeSortable() {
                 generateListFromJson();
