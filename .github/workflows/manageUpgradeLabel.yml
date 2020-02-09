@@ -1,0 +1,17 @@
+name: Manage Upgrade Label
+
+on: 
+  issues:
+    types: [labeled]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    if: github.event.issue.id == 7
+
+    steps:
+    - uses: andymckay/labeler@1.0.2
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        remove-labels: "upgrade-levels"
