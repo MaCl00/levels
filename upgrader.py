@@ -6,7 +6,7 @@ errors = 0
 
 
 def upgradeFile(path):
-    with open(path, 'r+') as f:
+    with open(path, 'r+', encoding='utf8') as f:
         global errors
         level = json.loads(f.read())
         firstKey = list(level.keys())[0]
@@ -79,7 +79,7 @@ def upgradeLevel(version, level):
                 'visible': ws['sprite']['visible']
             }
     level['softwaredata']['version'] = version
-    data = json.dumps(level, separators=(',', ':'))
+    data = json.dumps(level, separators=(',', ':'), ensure_ascii=False)
     hash = generateHash(data)
     return '{"CHKSUM>#' + hash + '#":' + data + '}'
 
