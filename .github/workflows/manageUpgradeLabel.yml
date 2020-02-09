@@ -8,7 +8,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    if: github.event.issue.id == 7
+    if: github.event.issue.number == 7
 
     steps:
     - uses: andymckay/labeler@1.0.2

@@ -8,7 +8,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    if: github.event.issue.id == 7 && github.event.issue.labels[0].name == 'upgrade-levels'
+    if: github.event.issue.number == 7 && github.event.issue.labels[0].name == 'upgrade-levels'
 
     steps:
     - uses: actions/checkout@v1
